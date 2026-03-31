@@ -8,9 +8,13 @@
 #include <stdlib.h>
 #include <math.h>
 #define MAX_ROWS 1000
+
 int main(void) {
+  //file reading opertion and fail message print  
     FILE *fp = fopen("data.csv", "r");
     if (!fp) { fprintf(stderr, "Cannot open data.csv\n"); return 1; }
+
+    //actual code for parsing and putting into a 2d array    
     double x[MAX_ROWS], y[MAX_ROWS];
     int n = 0;
     char line[256];
@@ -18,12 +22,14 @@ int main(void) {
     while (fgets(line, sizeof(line), fp) && n < MAX_ROWS)
         if (sscanf(line, "%lf,%lf", &x[n], &y[n]) == 2) n++;
     fclose(fp);
+
+    // actual code for that stats sum shit    
     if (n < 2) { fprintf(stderr, "Need at least 2 data points.\n"); return 1; }
     double sum_x=0, sum_y=0, sum_xy=0, sum_x2=0;
     for (int i=0; i<n; i++) {
         sum_x  += x[i]; sum_y  += y[i];
         sum_xy += x[i]*y[i]; sum_x2 += x[i]*x[i];
-    }
+    }    
     double x_bar = sum_x/n, y_bar = sum_y/n;
     double denom = n*sum_x2 - sum_x*sum_x;
     if (fabs(denom) < 1e-12) { fprintf(stderr,"All x identical; regression undefined.\n"); return 1; }
@@ -36,6 +42,9 @@ int main(void) {
         SST += (y[i]-y_bar)*(y[i]-y_bar);
     }
     double R2 = (SST > 1e-12) ? 1.0 - SSR/SST : 1.0;
+
+
+    //Result printing section blehh
     printf("=== Simple Linear Regression: y = a + b*x ===\n");
     printf("n         : %d\n", n);
     printf("x_bar     : %.6f\n", x_bar);

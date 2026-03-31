@@ -1,0 +1,4 @@
+#+TITLE: ENG MATHEMATICA
+#+AUTHOR: Mrunal Bhamare
+
+* Regression

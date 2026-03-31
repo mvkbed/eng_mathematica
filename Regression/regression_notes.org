@@ -1,0 +1,168 @@
+#+TITLE: Linear Regression & Correlation — Engineering Mathematics II
+#+AUTHOR: Mrunal Bhamare | BTech CSE, NFSU
+#+DATE: 2026
+#+OPTIONS: toc:2 num:t
+#+STARTUP: showall
+
+* 1. Theoretical Foundation
+
+** 1.1 What Is Regression?
+
+Regression fits a mathematical relationship between a dependent variable /y/ and
+independent variable(s) /x/ from empirical data. Goal: find the best-fit line/curve
+that minimises prediction error across all observations.
+
+BTech Engg. Maths II scope:
+- Simple Linear Regression (one predictor)
+- Method of Least Squares (optimisation principle)
+- Pearson Correlation Coefficient
+- Two Lines of Regression
+
+** 1.2 Simple Linear Regression Model
+
+Given n data pairs (x₁,y₁), …, (xₙ,yₙ), assume:
+
+  ŷ = a + bx
+
+where a = y-intercept (regression constant), b = slope (regression coefficient).
+
+** 1.3 Least Squares Principle
+
+Minimise Sum of Squared Residuals:
+
+  S = Σ (yᵢ - a - b·xᵢ)²
+
+Setting ∂S/∂a = 0 and ∂S/∂b = 0 gives the Normal Equations:
+
+  Σy  = na + b·Σx          ... (I)
+  Σxy = a·Σx + b·Σx²       ... (II)
+
+Solving simultaneously:
+
+  b = (n·Σxy − Σx·Σy) / (n·Σx² − (Σx)²)
+  a = ȳ − b·x̄
+
+** 1.4 Regression of x on y (Second Line)
+
+For predicting x from y:
+
+  x̂ = c + d·y
+
+  d = (n·Σxy − Σx·Σy) / (n·Σy² − (Σy)²)
+  c = x̄ − d·ȳ
+
+Both lines always intersect at the point of means (x̄, ȳ).
+
+** 1.5 Formula Summary Table
+
+| Symbol      | Formula                                        |
+|-------------|------------------------------------------------|
+| x̄           | Σx / n                                         |
+| ȳ           | Σy / n                                         |
+| b (y on x)  | (n·Σxy − Σx·Σy) / (n·Σx² − (Σx)²)            |
+| a           | ȳ − b·x̄                                       |
+| d (x on y)  | (n·Σxy − Σx·Σy) / (n·Σy² − (Σy)²)            |
+| c           | x̄ − d·ȳ                                       |
+| r           | num / sqrt[(n·Σx²−(Σx)²)(n·Σy²−(Σy)²)]       |
+| r²          | b · d  ← KEY IDENTITY                         |
+| SSR         | Σ(yᵢ − ŷᵢ)²                                   |
+| SST         | Σ(yᵢ − ȳ)²                                    |
+| R²          | 1 − SSR/SST                                   |
+
+* 2. Correlation vs Regression
+
+** 2.1 Pearson Correlation Coefficient
+
+  r = (n·Σxy − Σx·Σy) / sqrt[(n·Σx² − (Σx)²)(n·Σy² − (Σy)²)]
+
+Range: −1 ≤ r ≤ 1
+
+| |r| range   | Interpretation          |
+|------------|-------------------------|
+| 0.9 – 1.0  | Very strong             |
+| 0.7 – 0.9  | Strong                  |
+| 0.5 – 0.7  | Moderate                |
+| 0.3 – 0.5  | Weak                    |
+| 0.0 – 0.3  | Very weak / negligible  |
+
+** 2.2 Critical Differences
+
+| Aspect        | Correlation                    | Regression                      |
+|---------------|--------------------------------|---------------------------------|
+| Purpose       | Measures association strength  | Models/predicts y from x        |
+| Output        | Scalar r ∈ [−1, 1]            | Equation ŷ = a + bx             |
+| Symmetry      | corr(x,y) = corr(y,x)         | y-on-x line ≠ x-on-y line       |
+| Causality     | No assumption                  | Assumes x → y direction         |
+| Units         | Dimensionless                  | b has units Δy/Δx               |
+| Scale inv.    | r invariant to linear scaling  | b changes with rescaling of x/y |
+| Lines         | No regression line             | Two lines, meet at (x̄, ȳ)      |
+
+** 2.3 Key Identity
+
+  r² = b · d     →     r = ±√(b·d)
+
+Sign of r = sign of b = sign of d (always agree).
+
+** 2.4 Coefficient of Determination
+
+  R² = r²
+
+Interpretation: R² × 100% of variance in y is explained by the linear model.
+
+* 3. C Programs
+
+** 3.1 Program List
+
+| File                       | Purpose                                          |
+|----------------------------|--------------------------------------------------|
+| prog1_basic_regression.c   | a, b, SSR, SST, R² — full regression summary     |
+| prog2_prediction.c         | Interactive: enter x, get predicted ŷ            |
+| prog3_correlation.c        | r, r², direction, strength, verify r²=b·d        |
+| prog4_two_lines.c          | Both regression lines + intersection at (x̄, ȳ)  |
+| prog5_residuals.c          | Residual table with outlier detection (|e|>2s)   |
+
+** 3.2 Compilation
+
+#+BEGIN_EXAMPLE
+gcc -o prog1 prog1_basic_regression.c -lm
+gcc -o prog2 prog2_prediction.c -lm
+gcc -o prog3 prog3_correlation.c -lm
+gcc -o prog4 prog4_two_lines.c -lm
+gcc -o prog5 prog5_residuals.c -lm
+#+END_EXAMPLE
+
+** 3.3 CSV Format (data.csv)
+
+#+BEGIN_EXAMPLE
+x,y
+1,2.1
+2,3.9
+...
+#+END_EXAMPLE
+
+First row = header (skipped). Values are doubles. Replace with your dataset.
+
+* 4. Key Exam Formulas (Quick Reference)
+
+#+BEGIN_EXAMPLE
+b   = (n·Σxy − Σx·Σy) / (n·Σx² − (Σx)²)
+a   = ȳ − b·x̄
+d   = (n·Σxy − Σx·Σy) / (n·Σy² − (Σy)²)
+c   = x̄ − d·ȳ
+r   = (n·Σxy − Σx·Σy) / √[(n·Σx²−(Σx)²)(n·Σy²−(Σy)²)]
+r²  = b·d                ← always verify this in exam solutions
+R²  = 1 − SSR/SST
+SSR = Σ(yᵢ − ŷᵢ)²
+SST = Σ(yᵢ − ȳ)²
+s   = √(SSR / (n−2))    ← residual std dev; n−2 DOF (estimated a and b)
+#+END_EXAMPLE
+
+* 5. Edge Cases & Failure Modes
+
+- All xᵢ identical → denom = 0 → b undefined → cannot regress (handled in code)
+- r = 0 → ŷ = ȳ for all x → x has zero predictive power
+- r = ±1 → both regression lines coincide (perfect fit)
+- r² = b·d fails in floating point if b,d have opposite signs (shouldn't happen; indicates data error)
+- n = 2 → perfect fit always; s = 0 (n−2 = 0 DOF); do not over-interpret R²
+- Residual sum ≈ 0 numerically (up to floating point); large sum_e signals a bug
+- Outlier heuristic |eᵢ| > 2s flags ~5% of normal data by Chebyshev; use |eᵢ| > 3s for stricter detection
